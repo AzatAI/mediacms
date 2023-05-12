@@ -13,7 +13,7 @@ services:
       ENABLE_CELERY_BEAT: 'no'
       ADMIN_USER: 'admin'
       ADMIN_EMAIL: 'admin@localhost'
-      #ADMIN_PASSWORD: 'uncomment_and_set_password_here'
+      ADMIN_PASSWORD: 'adminpasswd'
     command: "./deploy/docker/prestart.sh"
     restart: on-failure
     depends_on:
@@ -26,7 +26,7 @@ services:
     deploy:
       replicas: 1
     ports:
-      - "80:80"
+      - "8180:80"
     volumes:
       - ./:/home/mediacms.io/mediacms/
     environment:
@@ -36,6 +36,15 @@ services:
       ENABLE_MIGRATIONS: 'no'
     depends_on:
       - migrations
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.mediacms.loadbalancer.server.port=80
+      - traefik.http.routers.mediacms-https.entrypoints=https
+      - traefik.http.routers.mediacms-https.rule=Host(`media.azat.ai`)
+      - traefik.http.routers.mediacms-https.tls=true
+      - traefik.http.routers.mediacms-https.tls.certresolver=le
+    networks:
+      - traefik-public
   celery_beat:
     image: mediacms/mediacms:latest
     volumes:
@@ -64,7 +73,7 @@ services:
   db:
     image: postgres:13
     volumes:
-      - ../postgres_data:/var/lib/postgresql/data/
+      - postgres_data:/var/lib/postgresql/data/
     restart: always
     environment:
       POSTGRES_USER: mediacms
@@ -83,3 +92,13 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+
+
+volumes:
+  postgres_data:
+  media_store:
+  static_store:
+
+networks:
+  traefik-public:
+    external: true
