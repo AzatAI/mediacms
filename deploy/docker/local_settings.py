@@ -1,5 +1,5 @@
 FRONTEND_HOST = 'http://localhost'
-PORTAL_NAME = 'MediaCMS'
+PORTAL_NAME = 'AzatAI Media'
 SECRET_KEY = 'ma!s3^b-cw!f#7s6s0m3*jx77a@riw(7701**(r=ww%w!2+yk2'
 POSTGRES_HOST = 'db'
 REDIS_LOCATION = "redis://redis:6379/1"
@@ -32,3 +32,9 @@ CELERY_RESULT_BACKEND = BROKER_URL
 MP4HLS_COMMAND = "/home/mediacms.io/bento4/bin/mp4hls"
 
 DEBUG = False
+
+# CUSTOM SETTINGS
+CAN_ADD_MEDIA = "advancedUser"
+PORTAL_WORKFLOW = "unlisted"
+REGISTER_ALLOWED = False
+
